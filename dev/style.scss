@@ -1,0 +1,29 @@
+.wikipedia-summary{
+	.hidden,.mw-editsection,:empty{
+		display:none !important;
+	}
+
+	blockquote{
+		margin:0;
+	}
+
+	&.dark{
+		background-color:#222;
+		color:#FFF;
+
+		a{
+			&:link{
+				color:#81d4fa;
+			}
+
+			&:visited{
+				color:#ce93d8;
+			}
+		}
+	}
+
+	&.light{
+		background-color:#fff;
+		color:#222;
+	}
+}

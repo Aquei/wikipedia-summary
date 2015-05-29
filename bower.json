@@ -1,0 +1,21 @@
+{
+  "name": "wikipedia-summary",
+  "main": "wikipedia-summary.html",
+  "version": "1.0.0",
+  "homepage": "https://github.com/Aquei/wikipedia-summary",
+  "authors": [
+    "aquei"
+  ],
+  "description": "show wikipedia summary",
+  "license": "apache license v2",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "browser-jsonp": "~1.0.8"
+  }
+}
