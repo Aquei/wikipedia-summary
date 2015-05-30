@@ -4,6 +4,8 @@ var inlineSource = require('gulp-inline-source');
 var uncache = require('gulp-uncache');
 var minifyHTML = require('gulp-minify-html');
 var uglify = require('gulp-uglify');
+var header = require('gulp-header');
+var rename = require('gulp-rename');
 
 gulp.task("js", function(){
 	gulp.src("dev/*.js")
@@ -14,7 +16,7 @@ gulp.task("js", function(){
 });
 
 gulp.task("html", function(){
-	gulp.src("dev/*.html")
+	gulp.src("dev/wikipedia-summary.html")
 		.pipe(inlineSource({
 			compress: false,
 			pretty: false}))
@@ -26,7 +28,10 @@ gulp.task("html", function(){
 			empty: true,
 			conditionals: true,
 			}))
-		.pipe(gulp.dest("./"));
+		.pipe(gulp.dest("./"))
+		.pipe(header('<link href=../libraries/browser-jsonp.html rel=import>'))
+		.pipe(rename({suffix: '-full'}))
+		.pipe(gulp.dest('./'));
 });
 
 gulp.task("css", function(){
