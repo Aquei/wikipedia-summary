@@ -6,6 +6,7 @@ var minifyHTML = require('gulp-minify-html');
 var uglify = require('gulp-uglify');
 var header = require('gulp-header');
 var rename = require('gulp-rename');
+var fs = require('fs');
 
 gulp.task("js", function(){
 	gulp.src("dev/*.js")
@@ -29,8 +30,8 @@ gulp.task("html", function(){
 			conditionals: true,
 			}))
 		.pipe(gulp.dest("./"))
-		.pipe(header('<link href=../libraries/browser-jsonp.html rel=import>'))
-		.pipe(rename({suffix: '-full'}))
+		.pipe(header(fs.readFileSync('./dev/dependency.html', 'utf8')))
+		.pipe(rename({suffix: '-bundle'}))
 		.pipe(gulp.dest('./'));
 });
 

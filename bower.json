@@ -16,6 +16,8 @@
     "tests"
   ],
   "dependencies": {
-    "browser-jsonp": "~1.0.8"
+    "browser-jsonp": "~1.0.8",
+    "libraries": "git@github.com:Aquei/libraries.git",
+    "customevent-polyfill": "~1.0.0"
   }
 }
