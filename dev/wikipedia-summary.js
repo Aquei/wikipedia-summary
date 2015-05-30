@@ -3,6 +3,7 @@
 	var wsProto = Object.create(HTMLElement.prototype),
 		privateVars = {};
 
+
 	//versionを定義します
 	Object.defineProperty(wsProto, "version", {
 		enumerable: true, //プロパティ列挙に現れる
