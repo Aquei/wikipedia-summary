@@ -3,7 +3,13 @@
 		display:none !important;
 	}
 
+	a[href^='http://creativecommons.org/'],
+	a[href^='https://creativecommons.org/']{
+		font-size:0.75em;
+	}
+
 	blockquote{
+		border:none;
 		margin:0;
 	}
 
