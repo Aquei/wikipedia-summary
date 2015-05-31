@@ -1,7 +1,8 @@
 (function(global){
 	"use strict";
 	var wsProto = Object.create(HTMLElement.prototype),
-		privateVars = {};
+		privateVars = {},
+		WikipediaSummary;
 
 
 	//versionを定義します
@@ -995,7 +996,21 @@
 
 
 	//カスタムエレメントを登録
-	document.registerElement('wikipedia-summary', {prototype: wsProto});
+	try{
+		WikipediaSummary = document.registerElement('wikipedia-summary', {prototype: wsProto});
+	}catch(e){
+		//すでに登録済み
+		console.warn("<wikipedia-summary>は既に登録されています。");
+		return;
+	}
 
 
-})(this);
+	//晒す
+	if((typeof module !== "undefined" && module !== null) && module.exports){
+		module.exports = WikipediaSummary;
+	}else if(typeof global["WikipediaSummary"] === "undefined"){
+		global["WikipediaSummary"] = WikipediaSummary;
+	}
+
+
+})((this || 0).self || global);
