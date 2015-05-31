@@ -3,9 +3,12 @@
 		display:none !important;
 	}
 
-	a[href^='http://creativecommons.org/'],
-	a[href^='https://creativecommons.org/']{
-		font-size:0.75em;
+	a{
+		text-decoration:none;
+
+		&:hover,&:focus{
+			text-decoration:underline;
+		}
 	}
 
 	blockquote{
@@ -16,7 +19,6 @@
 	&.dark{
 		background-color:#222;
 		color:#FFF;
-
 		a{
 			&:link{
 				color:#81d4fa;
@@ -25,6 +27,7 @@
 			&:visited{
 				color:#ce93d8;
 			}
+
 		}
 	}
 

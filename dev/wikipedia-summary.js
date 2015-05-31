@@ -693,10 +693,22 @@
 	function getSummary(node){
 		var summary = [],
 			currentNode,
-			node = node || this.wpData.node;
+			node = node || this.wpData.node,
+			paras,
+			i,
+			l;
 
+		//rootの子パラグラフ一覧
+		//からの<p>が混じっていることがあるので、とりあえず文字数でチェック
+		paras = this.nodeListToArray(node.querySelectorAll("fake-body>p"));
+		for(i=0,l=paras.length; i<l; ++i){
+			if(paras[i].textContent.length > 9){
+				currentNode = paras[i];
+				break;
+			}
+		}
+		
 
-		currentNode = node.querySelector("fake-body>p");
 
 		while(currentNode !== null && "tagName" in currentNode && currentNode.tagName.toLowerCase() === 'p'){
 			summary.push(currentNode.cloneNode(true));
@@ -950,6 +962,7 @@
 				anc2 = document.createElement('a'),
 				span = document.createElement('span'),
 				span2 = document.createElement('span'),
+				small = document.createElement('small'),
 				url,
 				bq,
 				licenses = 'http://creativecommons.org/licenses/by-sa/3.0/',
@@ -972,12 +985,14 @@
 
 			span.innerHTML = ' (';
 			span2.innerHTML = ') ';
-			span.appendChild(anc2);
-			span.appendChild(span2);
+
+			small.appendChild(span);
+			small.appendChild(anc2);
+			small.appendChild(span2);
 
 
 			this.insertContent(
-					span,
+					small,
 					'p.attr'
 			);
 
