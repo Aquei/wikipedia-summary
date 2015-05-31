@@ -22,6 +22,53 @@
 	//
 
 
+	//======Event
+	//	beforeRequest:
+	//		apiにリクエストする直前に発火します
+	//
+	//	requestSuccess:
+	//		リクエスト成功時に発火します
+	//		detail:
+	//			data:
+	//				(object) リクエスト結果のオブジェクトです
+	//
+	//			url:
+	//				(string) リクエストに使ったurlです
+	//
+	//	requestError:
+	//		リクエスト失敗時に発火します
+	//		detail:
+	//			data:
+	//				null
+	//
+	//			url:
+	//				(string) リクエストに使ったurlです
+	//
+	//	resultError:
+	//		api問い合わせの結果がエラーだった
+	//		detail:
+	//			data:
+	//				(object) リクエスト結果のオブジェクト data.query.pages[-1]を参照せよ
+	//
+	//			url:
+	//				(string) リクエストに使ったurlです
+	//
+	//				
+	//	gotData:
+	//		リクエストが成功して各種プロパティをプロパティに保存した後に発火します
+	//		detail:
+	//			title:
+	//				(string) APIが返すページのタイトル
+	//			pageId:
+	//				(string) APIが返すページのid
+	//			html:
+	//				(string) APIが返すHTML
+	//
+	//	
+
+
+
+
 	//======Property
 	
 	//this.baseTemplates
@@ -162,12 +209,17 @@
 	//param:
 	//	1番目:(function) callback
 	//		リクエスト成功時のコールバック
+	//		データがコールバックに渡されます
 	//	
 	//	2番目:(string) url
 	//		jsonpのリクエストurl
 	//
 	//	3番目:(object) data
 	//		クエリパラメータになるobject
+	//
+	//	4番目:(function) errorCallback
+	//		リクエスト失敗時のコールバック
+	//		省略可
 	//
 	//return:
 	//	this
@@ -491,16 +543,58 @@
 
 
 
-	function requestWithJsonP(callback, url, data){
+	function requestWithJsonP(callback, url, data, errorCallback){
 		var _this = this;
 
 		JSONP({
 			url: url,
 			data: data,
 			success: function(data){
+				//リクエスト成功時のイベントオブジェクト
+				var ev, ev2;
+				
+				ev = new CustomEvent('requestSuccess', {
+					detail: {
+						data: data,
+						url: url
+					}
+				});
+
+				//発火
+				_this.dispatchEvent(ev);
+
+				//コールバックを実行
 				callback(data);
+
+
+				if(data.query && data.query.pages && data.query.pages["-1"]){
+					//リクエストは成功したが、結果はエラーだった
+					ev2 = new CustomEvent('resultError', {
+						detail: {
+							data: data,
+							url: url
+						}
+					});
+
+					//イベント発火
+					_this.dispatchEvent(ev2);
+				}
 			},
 			error: function(){
+				//リクエスト失敗時のイベントオブジェクト
+				var ev = new CustomEvent('requestError', {
+					detail: {
+						data: null,
+						url: url
+					}
+				});
+
+				//発火
+				_this.dispatchEvent(ev);
+
+				if(errorCallback){
+					errorCallback();
+				}
 				cosole.warn("JSONPリクエストに失敗しました");
 			}
 		});
@@ -624,9 +718,11 @@
 
 		var pages = json.query.pages,
 			pageId,
-			tmp;
+			tmp,
+			ev;
 
 		pageId = Object.keys(pages)[0];
+
 
 		this.wpData.title = pages[pageId].title;
 		this.wpData.pageId = pageId;
@@ -637,6 +733,16 @@
 
 		this.wpData.node = tmp.content;
 
+		//各種データをセットしたのでイベントを発火
+		ev = new CustomEvent('gotData', {
+			detail: {
+				title: pages[pageId].title,
+				pageId: pageId,
+				html: pages[pageId].revisions[0]["*"]
+			}
+		});
+
+		this.dispatchEvent(ev);
 		return this;
 	}
 
@@ -777,10 +883,15 @@
 
 
 	function checkAndRun(){
-		var _this = this;
+		var _this = this,
+			ev;
 
 		if(this.isRequestReady()){
+			//リクエストする前にイベントを発火しておく
+			ev = new CustomEvent('beforeRequest');
+			_this.dispatchEvent(ev);
 
+			//リクエスト
 			this.requestWithJsonP(function(data){
 				//リクエスト成功時にはonGetDataCallbacksを実行していく
 				_this.onGetDataCallbacks.forEach(function(val, key, arry){
