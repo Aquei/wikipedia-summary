@@ -13,7 +13,7 @@ gulp.task("js", function(){
 		.pipe(uglify({
 			preserveComments:'some',
 		}))
-		.pipe(gulp.dest("./"));
+		.pipe(gulp.dest("dist"));
 });
 
 gulp.task("html", function(){
@@ -28,9 +28,9 @@ gulp.task("html", function(){
 		.pipe(minifyHTML({
 			empty: true,
 			conditionals: true,
-			}));
+			}))
+		.pipe(gulp.dest("dist"));
 		/*
-		.pipe(gulp.dest("./"))
 		.pipe(header(fs.readFileSync('./dev/dependency.html', 'utf8')))
 		.pipe(rename({suffix: '-bundle'}))
 		.pipe(gulp.dest('./'));
