@@ -87,13 +87,6 @@
 	//default: undefined
 
 
-	//this.jsonpCallbacks
-	//
-	//jsonp用のグローバルな関数リスト
-	//type: Array
-	//default: []
-
-	
 
 	//this.queryParams
 	//
@@ -183,15 +176,6 @@
 
 
 
-	//objectをqueryStringにして返す
-	//param:
-	//	1番目:(object) options
-	//
-	//return: (string) querystring
-	wsProto.getQueryString = getQueryString;
-
-
-
 	//wikipedia apiのエンドポイントを設定する
 	//param:
 	//	1番目:(string) languageCode
@@ -224,7 +208,7 @@
 	//
 	//return:
 	//	this
-	wsProto.requestWithJsonP = requestWithJsonP;
+	wsProto.requestJsonP = requestJsonP;
 
 
 	//domのattributeから設定を読み取り、セットする
@@ -375,7 +359,6 @@
 	function init(){
 		this.baseTemplates = [];
 		this.endpoint;
-		this.jsonpCallbacks = [];
 		this.queryParams = {};
 		this.wpData = {};
 
@@ -516,17 +499,6 @@
 
 
 
-	function getQueryString(options){
-		var queryStringArray = [];
-		Object.keys(options).forEach(function(value, index, arry){
-			queryStringArray.push(encodeURIComponent(index) + '=' + encodeURIComponent(value))
-		});
-
-		return queryStringArray.join('&');
-	}
-
-
-
 	function setWikipediaAPIEndpoint(languageCode, URIScheme){
 		var languageCode = (languageCode || "ja").toLowerCase(),
 			URIScheme = (URIScheme || location.protocol).toLowerCase(),
@@ -544,7 +516,7 @@
 
 
 
-	function requestWithJsonP(callback, url, data, errorCallback){
+	function requestJsonP(callback, url, data, errorCallback){
 		var _this = this;
 
 		JSONP({
@@ -596,7 +568,7 @@
 				if(errorCallback){
 					errorCallback();
 				}
-				cosole.warn("JSONPリクエストに失敗しました");
+				console.warn("JSONPリクエストに失敗しました");
 			}
 		});
 	}
@@ -905,7 +877,7 @@
 			_this.dispatchEvent(ev);
 
 			//リクエスト
-			this.requestWithJsonP(function(data){
+			this.requestJsonP(function(data){
 				//リクエスト成功時にはonGetDataCallbacksを実行していく
 				_this.onGetDataCallbacks.forEach(function(val, key, arry){
 					if(typeof val === "function"){
