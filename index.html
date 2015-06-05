@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>wikipedia-summary</title>
+		<!--[if IE]>
+		<script src="https://cdn.jsdelivr.net/classlist/2014.01.31/classList.min.js"></script>
+		<![endif]-->
+		<script>
+			if(
+			"registerElement" in document
+			&& "createShadowRoot" in HTMLElement.prototype
+			&& "import" in document.createElement("link")
+			&& "content" in document.createElement("template")
+			){
+				//all ok
+			}else{
+				document.write('<script src="https://cdn.jsdelivr.net/webcomponentsjs/latest/webcomponents.min.js"><\/script>');
+			}
+		</script>
+
+		<link href="https://cdn.jsdelivr.net/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+		<script src="https://cdn.rawgit.com/larryosborn/JSONP/v1.0.8/lib/jsonp.min.js"></script>
+		<script src="https://cdn.rawgit.com/krambuhl/custom-event-polyfill/0.2.1/custom-event-polyfill.js"></script>
+		<link href="//aquei.github.io/normalize-css/dist/normalize-css.html" rel="import">
+		<link href="dist/wikipedia-summary.html" rel="import">
+
+		<style>
+			body {
+				padding-top: 50px;
+			}
+
+			footer{
+				background-color:#101010;
+				color:white;
+				margin-top:100px;
+				padding:100px 0;
+				text-align:center;
+			}
+
+			footer a{
+				margin: 0.4em;
+				padding: 1em;
+				cursor: pointer;
+				background: #E1E1E1 none repeat scroll 0% 0%;
+				text-decoration: none;
+				color: #666;
+			}
+
+			ins.adsbygoogle{
+				margin:30px auto;
+			}
+
+			p.ad{
+				text-align:center;
+			}
+
+			pre {
+				margin: 20px 0;
+			}
+
+			.con{
+				padding-left:3em;
+			}
+
+			.page-header[id]{
+				padding-top:50px;
+			}
+
+			.starter-template {
+				padding: 40px 15px;
+				text-align: center;
+			}
+
+		</style>		
+		<link href="https://cdn.jsdelivr.net/highlight.js/8.6.0/styles/default.min.css" rel="stylesheet">
+		<link href="https://cdn.jsdelivr.net/hover.css/2.0.2/hover-min.css" rel="stylesheet">
+
+		<link rel="canonical" href="https://aquei.github.io/wikipedia-summary/">
+		
+		<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-63207906-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+	</head>
+	<body id="top">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="https://aquei.github.io/wikipedia-summary/">wikipedia-summary</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="#top">トップ</a></li>
+			<li><a href="#livedemo">ライブデモ</a></li>
+			<li><a href="#usage">使い方</a></li>
+			<li><a href="#attr">属性</a></li>
+			<li><a href="#event">イベント</a></li>
+			<li><a href="#js">雑多</a></li>
+			<li><a href="#tips">tips</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="starter-template">
+        <h1>wikipedia-summary</h1>
+		<p class="lead"><a href="https://ja.wikipedia.org/">Wikipedia</a>の概要を表示するカスタムエレメントです</p>
+
+	</div>
+
+	<div class="page-header" id="livedemo">
+		<h1>ライブデモ <small>「魯迅」</small></h1>
+	</div>
+	<div class="con">
+		<wikipedia-summary title="魯迅"></wikipedia-summary>
+	<pre><code>&lt;wikipedia-summary title=&quot;魯迅&quot;&gt;&lt;/wikipedia-summary&gt;</code></pre>
+		<hr>
+		<wikipedia-summary  title="Lu Xun" lang="en" theme="dark"></wikipedia-summary>
+	<pre><code>&lt;wikipedia-summary  title=&quot;Lu Xun&quot; lang=&quot;en&quot; theme=&quot;dark&quot;&gt;&lt;/wikipedia-summary&gt;</code></pre>
+
+	</div>
+
+	<!-- github pages -->
+
+	<p class="ad">広告</p>
+	<ins class="adsbygoogle"
+		style="display:block"
+		data-ad-client="ca-pub-6931805962182644"
+		data-ad-slot="7364765657"
+		data-ad-format="auto"></ins>
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+
+
+	<div class="page-header" id="usage">
+		<h1>使い方</h1>
+	</div>
+	<div class="con">
+		<h2>読み込み</h2>
+		<div>
+			<h3>外部にホスティングされているファイルを利用する場合</h3>
+			<p>以下をhtmlにコピー＆ペーストしてください。</p>
+			<pre><code>&lt;script src=&quot;//cdn.rawgit.com/larryosborn/JSONP/v1.0.8/lib/jsonp.min.js&quot;&gt;&lt;/script&gt;
+&lt;script src=&quot;//cdn.rawgit.com/krambuhl/custom-event-polyfill/0.2.1/custom-event-polyfill.js&quot;&gt;&lt;/script&gt;
+&lt;link href=&quot;//aquei.github.io/normalize-css/dist/normalize-css.html&quot; rel=&quot;import&quot;&gt;
+&lt;link href=&quot;//aquei.github.io/wikipedia-sumamry/dist/wikipedia-summary.html&quot; rel=&quot;import&quot;&gt;</code></pre> 
+			<h3>自身でホストする場合</h3>
+			<p>自分でホストする場合は<a href="https://github.com/Aquei/wikipedia-summary/archive/master.zip">wikipedia-summaryをダウンロード</a>してdistディレクトリをアップロードし、wikipedia-summary.htmlをimportしてください。<p>
+					<h4>依存</h4>
+					<p>また、wikipedia-summaryは次のライブラリに依存します</p>
+					<ul>
+						<li><a href="https://github.com/Aquei/normalize-css">normalize-css</a><br>無くてもあまり問題ないです</li>
+						<li><a href="https://github.com/larryosborn/JSONP">JSONP</a></li>
+						<li><a href="https://github.com/krambuhl/custom-event-polyfill">custom-event-polyfill</a><br>IE9+で必要です。<code>new CustomEvent();</code>のポリフィルならcustom-event-polyfill以外でも構いません。</li>
+					</ul>
+				</div>
+				<h2>タグを利用</h2>
+				<div>
+					<p><code>&lt;wikipedia-summary&gt;&lt;/wikipeedia-summary&gt;</code>を好きな場所に置き、表示したいWikipediaの項目名をtitle属性に設定します。例:</p>
+		<pre><code>&lt;wikipedia-summary title=&quot;好きなウィキペディアの項目名&quot;&gt;&lt;/wikipedia-summary&gt;</code></pre>
+				</div>
+			</div>
+			<div class="page-header" id="attr">
+				<h1>属性</h1>
+			</div>
+			<div class="con">
+				<p>wikipedia-summaryは以下の属性が設定可能です。</p>
+				<dl class="dl-horizontal">
+					<dt>title</dt>
+					<dd><b>必須</b> ウィキペディアの項目名。</dd>
+
+					<dt>lang</dt>
+					<dd>どの言語のwikipediaのページかを指定します。なにもしないと&quot;ja&quot;、すなわちウィキペディア日本語版に設定します。言語リストは<a href="http://meta.wikimedia.org/wiki/Table_of_Wikimedia_projects">Table of Wikimedia projects</a>のlanguage code列を参照してください。</dd>
+
+					<dt>theme</dt>
+					<dd>配色を指定します。<a href="#livedemo">このページのdemo</a>を参考にしてください。<dl class="dl-horizontal">
+							<dt>無指定</dt>
+							<dd>透明な背景、デフォルトの文字色</dd>
+
+							<dt>light</dt>
+							<dd>白背景、黒っぽい文字</dd>
+
+							<dt>dark</dt>
+							<dd>黒っぽい背景、白文字</dd>
+						</dl>
+					</dd>
+
+				</dl>
+
+			</div>
+
+			<div class="page-header" id="event">
+				<h1>イベント</h1>
+			</div>
+			<div class="con">
+				<p>wikipedia-summaryは次のカスタムイベントを持ちます。</p>
+				<dl class="dl-horizontal">
+					<dt>beforeRequest</dt>
+					<dd>MediaWiki APIにリクエストする直前に発火します</dd>
+
+					<dt>requestSuccess</dt>
+					<dd>APIへリクエスト成功時に発火します。<code>event.detail</code>には以下があります。<br>
+						<dl>
+							<dt>data</dt>
+							<dd>APIリクエスト結果のjson</dd>
+
+							<dt>url</dt>
+							<dd>リクエストに利用したurl</dd>
+						</dl>
+					</dd>
+
+					<dt>requestError</dt>
+					<dd>APIリクエスト失敗時に発火します。<code>event.detail</code>には以下があります。<br>
+						<dl>
+							<dt>data</dt>
+							<dd>null</dd>
+
+							<dt>url</dt>
+							<dd>リクエストに利用したurl</dd>
+						</dl>
+					</dd>
+
+					<dt>resultError</dt>
+					<dd>API問い合わせの結果エラーが帰ってきた時に発火します。<code>event.detail</code>には以下があります。<br>
+						<dl>
+							<dt>data</dt>
+							<dd>APIが返すjson</dd>
+
+							<dt>url</dt>
+							<dd>リクエストに利用したurl</dd>
+						</dl>
+					</dd>
+
+					<dt>gotData</dt>
+					<dd>リクエストが成功して各種プロパティをエレメントのプロパティに保存した後に発火します。<code>event.detail</code>には以下があります。<br>
+						<dl>
+							<dt>title</dt>
+							<dd>APIが返すページのタイトル</dd>
+
+							<dt>pageId</dt>
+							<dd>APIが返すページのid</dd>
+
+							<dt>html</dt>
+							<dd>APIが返すHTML</dd>
+						</dl>
+					</dd>
+				</dl>
+	<div>
+		<p>例</p>
+	<pre><code>var elem = document.querySelector(&quot;wikipedia-summary&quot;);
+elem.addEventListener(&quot;gotData&quot;, function(e){
+		alert(e.detail.title + &quot;の概要を表示します&quot;);
+	}, false);</code></pre>	
+	</div>
+			</div>
+
+			<p class="ad">広告</p>
+<!-- github pages -->
+	<ins class="adsbygoogle"
+		style="display:block"
+		data-ad-client="ca-pub-6931805962182644"
+		data-ad-slot="7364765657"
+		data-ad-format="auto"></ins>
+	<script>
+		(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+
+
+			<div class="page-header" id="js">
+				<h1>メソッドとプロパティ</h1>
+			</div>
+
+			<div class="con">
+				<h3>プロパティ</h3>
+				<dl class="dl-horizontal">
+					<dt>baseTemplate</dt>
+					<dd>array - テンプレートのリスト</dd>
+
+					<dt>endpoint</dt>
+					<dd>string - apiのエンドポイント</dd>
+
+					<dt>queryParams</dt>
+					<dd>object - api問い合わせのクエリパラメータのkey,val</dd>
+
+					<dt>onGetDataCallbacks</dt>
+					<dd>array - データを取得した時のコールバック関数の配列</dd>
+
+					<dt>themeList</dt>
+					<dd>array - 配色のリスト</dd>
+
+					<dt>root</dt>
+					<dd>object - thisだったり、shadowRootだったり。このエレメントの管理下のroot</dd>
+
+					<dt>wpData</dt>
+					<dd>object - titleはタイトル、pageIdはid、htmlはhtml、nodeはdocumentFragment</dd>
+				</dl>
+
+				<h3>メソッド</h3>
+				<p>引数は<a href="https://github.com/Aquei/wikipedia-summary/blob/master/dev/wikipedia-summary.js">ソース</a>を見ること</p>
+				<dl class="dl-horizontal">
+					<dt>init</dt>
+					<dd>プロパティを初期化する</dd>
+
+					<dt>loadDefaultTemplates</dt>
+					<dd>デフォルトテンプレートを読み込み、リストに追加する</dd>
+
+					<dt>nodeListToArray</dt>
+					<dd>NodeListをArrayにして返す HTMLCollectionでも可</dd>
+
+					<dt>updateBase</dt>
+					<dd>テンプレートのリストを読み込み、this.rootに挿入する</dd>
+
+					<dt>setRoot</dt>
+					<dd>this.rootをセットする 新しいshadowRootをセットするのにも使う</dd>
+
+					<dt>resetRoot</dt>
+					<dd>rootのドキュメントをリセット、又は新規作成する</dd>
+
+					<dt>setWikipediaAPIEndpoint</dt>
+					<dd>wikipedia apiのエンドポイントを設定する</dd>
+
+					<dt>requestJsonP</dt>
+					<dd>jsonpリクエストを発生させる</dd>
+
+					<dt>readOptions</dt>
+					<dd>attributeから設定を読み取り、セットする</dd>
+
+					<dt>setDefaultQueryParams</dt>
+					<dd>デフォルトのqueryParamsを設定する</dd>
+
+					<dt>isRequestReady</dt>
+					<dd>リクエスト可能な常態かチェック</dd>
+
+					<dt>absUrl</dt>
+					<dd>アンカーを絶対urlにする</dd>
+
+					<dt>setDataFromJSON</dt>
+					<dd>jsonからタイトル,html,pageidをthisに設定する</dd>
+
+					<dt>insertContent</dt>
+					<dd>nodeやstringをthis.rootの指定した場所の末尾に挿入する 文字列の場合は既存の文字列と結合する</dd>
+
+					<dt>getOriginFromURL</dt>
+					<dd>urlからオリジンを返す</dd>
+
+					<dt>checkAndRun</dt>
+					<dd>チェックして実行できそうなら実行する</dd>
+
+					<dt>createdCallback</dt>
+					<dd>生成された時のコールバック</dd>
+
+					<dt>attributeChangedCallback</dt>
+					<dd>属性値変更時のコールバック</dd>
+
+					<dt>getSummary</dt>
+					<dd>summaryの&lt;p&gt;を探し、arrayで返す サマリーを探す為のメソッド</dd>
+
+					<dt>changeTheme</dt>
+					<dd>themeを変更する</dd>
+
+				</dl>
+			</div>
+
+			<div class="page-header" id="tips">
+				<h1>tips</h1>
+			</div>
+			<div class="con">
+				<ul>
+					<li>titleアトリビュートが変更されるたびにリクエストされるので、変更するのは慎重にするべき</li>
+					<li>ページのhtml丸々取得するので、長い記事では遅いし、帯域が必要だと思う</li>
+					<li>this.wpData.nodeはquerySelectorしやすように<pre><code>&lt;fake-body&gt;&lt;/fake-body&gt;</code></pre>でラップした。全然スマートじゃない</li>
+				</ul>
+			</div>
+		</div><!-- /.container -->
+
+		<footer>
+			<ul class="list-unstyled">
+				<li><a href="https://github.com/Aquei/wikipedia-summary" class="hvr-sweep-to-right">リポジトリ</a></li>
+				<li><a href="https://srytk.com/" class="hvr-sweep-to-right">ブログ</a></li>
+				<li><a href="/" class="hvr-sweep-to-right">他のガラクタとか</a></li>
+				<li><p class="ad">広告</p>
+					<!-- github pages -->
+					<ins class="adsbygoogle"
+						style="display:block"
+						data-ad-client="ca-pub-6931805962182644"
+						data-ad-slot="7364765657"
+						data-ad-format="auto"></ins>
+					<script>
+						(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>
+				</li>
+			</ul>
+
+		</footer>
+	<script src="https://cdn.jsdelivr.net/jquery/2.1.4/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/jquery.scrollto/2.1.0/jquery.scrollTo.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/jquery.localscroll/1.4.0/jquery.localScroll.min.js"></script>
+
+	<script src="https://cdn.jsdelivr.net/highlight.js/8.6.0/highlight.min.js"></script>
+	<script>
+		(function(){
+			"use strict";
+			try{
+				hljs.initHighlightingOnLoad();
+			}catch(e){
+				console.log(e);
+			}
+		})();
+
+		(function($){
+			"use strict";
+			try{
+				$.localScroll();
+			}catch(e){};
+		})(jQuery);
+	</script>
+	<script src="https://cdn.jsdelivr.net/jsdelivr-rum/1.5/jsdelivr-rum.min.js" async defer></script>
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	</body>
+</html>
+
